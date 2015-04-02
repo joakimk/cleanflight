@@ -291,7 +291,14 @@ static void processRxChannels(void)
         if (isRxDataDriven()) {
             rcData[chan] = sample;
         } else {
-            rcData[chan] = calculateNonDataDrivenChannel(chan, sample);
+            // Reverse channels so that it will work with an unprogrammable transmitter
+            // 2 == YAW
+            // 0 == ROLL
+            if(chan == 2 || chan == 0) {
+              rcData[chan] = calculateNonDataDrivenChannel(chan, rxConfig->midrc*2 - sample);
+            } else {
+              rcData[chan] = calculateNonDataDrivenChannel(chan, sample);
+            }
         }
     }
 }
